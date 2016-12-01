@@ -11,7 +11,7 @@ static hsa_status_t get_gpu_agent(hsa_agent_t agent, void *data) {
 		hsa_agent_get_info(agent, HSA_AGENT_INFO_NAME, name);
 		std::cout<<name<<std::endl;
 		*ret = agent;
-		return HSA_STATUS_INFO_BREAK;
+//		return HSA_STATUS_INFO_BREAK;
 	}
 	return HSA_STATUS_SUCCESS;
 }
