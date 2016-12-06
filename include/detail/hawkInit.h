@@ -24,10 +24,10 @@ namespace owl {
     public:
     std::map<uint32_t, std::list<void*>> cpuPtrMap;
     std::map<uint32_t, std::list<void*>> gpuPtrMap;
-    std::vector<size_t> gpuSize;
-    std::vector<size_t> cpuSize;
-    void addCpuPtr(uint32_t cpuID, void* cpuPtr);
-    void addGpuPtr(uint32_t gpuID, void* gpuPtr);
+    std::map<uint32_t,size_t> gpuSize;
+    std::map<uint32_t,size_t> cpuSize;
+    void addCpuPtr(uint32_t cpuID, void* cpuPtr, size_t size);
+    void addGpuPtr(uint32_t gpuID, void* gpuPtr, size_t size);
     void printCpuPtr();
     void printGpuPtr();
     horned() {}
