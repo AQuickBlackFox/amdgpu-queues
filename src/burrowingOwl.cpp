@@ -17,40 +17,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 */
 
-#include"hawkOwl.h"
-#include<iostream>
-#include<assert.h>
+#include "hawkOwl.h"
 
-int main() {
-	owl::hawk h1;//(1);
-  void *In_h1, *In_h2, *Out_h1, *Out_h2, *Ptr_d1, *Ptr_d2;
-  In_h1 = h1.AllocatePoolCPU(0, 1024);
-	Out_h1 = h1.AllocatePoolCPU(0, 1024);
-  Ptr_d1 = h1.AllocatePoolGPU(0, 1024);
-	In_h2 = h1.AllocatePoolCPU(1, 1024);
-	Out_h2 = h1.AllocatePoolCPU(1, 1024);
-	Ptr_d2 = h1.AllocatePoolGPU(1, 1024);
-  int *Host1Ptr1 = (int*)In_h1;
-	int *Host1Ptr2 = (int*)Out_h1;
-	int *Host2Ptr1 = (int*)In_h2;
-	int *Host2Ptr2 = (int*)Out_h2;
+owl::burrowing::burrowing(hsa_agent_t agent){
+  uint32_t size = 0;
+  hsa_agent_get_info(agent, HSA_AGENT_INFO_QUEUE_MAX_SIZE, &size);
+  hsa_queue_create(agent, size, HSA_QUEUE_TYPE_SINGLE, NULL, NULL, UINT32_MAX, UINT32_MAX, &Queue);
+}
 
-	for(unsigned i=0;i<256;i++){
-		Host1Ptr1[i] = 11;
-		Host1Ptr2[i] = 0;
-		Host2Ptr1[i] = 17;
-		Host2Ptr2[i] = 0;
-	}
-  h1.MemCpyCpuPoolToGpuPool(Ptr_d1, In_h1, 1024);
-  h1.MemCpyGpuPoolToCpuPool(Out_h1, Ptr_d1, 1024);
-	h1.MemCpyCpuPoolToGpuPool(Ptr_d2, In_h2, 1024);
-	h1.MemCpyGpuPoolToCpuPool(Out_h2, Ptr_d2, 1024);
-	h1.MemCpyGpuPoolToCpuPool(Out_h2, Ptr_d2, 1024);
-	for(unsigned i=0;i<256;i++){
-		assert(Host1Ptr1[i] == Host1Ptr2[i]);
-	}
-	for(unsigned i=0;i<256;i++){
-		assert(Host2Ptr1[i] == Host2Ptr2[i]);
-	}
 
+
+owl::burrowing::~burrowing(){
+  hsa_queue_destroy(Queue);
 }

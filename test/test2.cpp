@@ -23,34 +23,31 @@ THE SOFTWARE.
 
 int main() {
 	owl::hawk h1;//(1);
-  void *In_h1, *In_h2, *Out_h1, *Out_h2, *Ptr_d1, *Ptr_d2;
+  void *In_h1, *Out_h1, *Out_h2, *Ptr_d1, *Ptr_d2;
+
   In_h1 = h1.AllocatePoolCPU(0, 1024);
-	Out_h1 = h1.AllocatePoolCPU(0, 1024);
-  Ptr_d1 = h1.AllocatePoolGPU(0, 1024);
-	In_h2 = h1.AllocatePoolCPU(1, 1024);
+	Out_h1 = h1.AllocatePoolCPU(1, 1024);
 	Out_h2 = h1.AllocatePoolCPU(1, 1024);
+  Ptr_d1 = h1.AllocatePoolGPU(0, 1024);
 	Ptr_d2 = h1.AllocatePoolGPU(1, 1024);
+
   int *Host1Ptr1 = (int*)In_h1;
-	int *Host1Ptr2 = (int*)Out_h1;
-	int *Host2Ptr1 = (int*)In_h2;
 	int *Host2Ptr2 = (int*)Out_h2;
+	int *Host1Ptr2 = (int*)Out_h1;
 
 	for(unsigned i=0;i<256;i++){
 		Host1Ptr1[i] = 11;
-		Host1Ptr2[i] = 0;
-		Host2Ptr1[i] = 17;
 		Host2Ptr2[i] = 0;
+		Host1Ptr2[i] = 0;
 	}
   h1.MemCpyCpuPoolToGpuPool(Ptr_d1, In_h1, 1024);
-  h1.MemCpyGpuPoolToCpuPool(Out_h1, Ptr_d1, 1024);
-	h1.MemCpyCpuPoolToGpuPool(Ptr_d2, In_h2, 1024);
-	h1.MemCpyGpuPoolToCpuPool(Out_h2, Ptr_d2, 1024);
-	h1.MemCpyGpuPoolToCpuPool(Out_h2, Ptr_d2, 1024);
+	h1.MemCpyGpuPoolToCpuPool(Out_h1, Ptr_d1, 1024);
+	h1.MemCpyGpuPoolToGpuPool(Ptr_d2, Ptr_d1, 1024);
+  h1.MemCpyGpuPoolToCpuPool(Out_h2, Ptr_d2, 1024);
+
 	for(unsigned i=0;i<256;i++){
-		assert(Host1Ptr1[i] == Host1Ptr2[i]);
-	}
-	for(unsigned i=0;i<256;i++){
-		assert(Host2Ptr1[i] == Host2Ptr2[i]);
+		std::cout<<Host1Ptr2[i]<<std::endl;
+		assert(Host1Ptr1[i] == Host2Ptr2[i]);
 	}
 
 }
